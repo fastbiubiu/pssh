@@ -1,0 +1,58 @@
+#!/usr/bin/env python
+# coding=utf-8
+
+__author__ = 'dunkebiao'
+
+"install pssh file"
+
+import os
+import sys
+import getopt
+import urllib2
+
+
+class Install:
+    install_dir = '/usr/local/bin'
+    filename = 'pssh'
+    pssh = ''
+
+    def __init__(self):
+        try:
+            options, args = getopt.getopt(sys.argv[1:], "f:d:", ["filename=", "install-dir="])
+        except getopt.GetoptError, e:
+            sys.exit(e.msg)
+
+        for name, value in options:
+            if name in ("-d", "--install_dir"):
+                self.install_dir = value.rsplit('/')
+            if name in ("-f", "--filename"):
+                self.filename = value
+
+        if not os.path.exists(self.install_dir):
+            sys.exit('[Error] Directory does not exist')
+
+    def get_pssh(self):
+        try:
+            self.pssh = urllib2.urlopen('https://raw.githubusercontent.com/dunkebiao/python/master/ssh.py').read()
+        except urllib2.HTTPError, e:
+            sys.exit(e.code)
+        except urllib2.URLError, e:
+            sys.exit(e.reason)
+        return self
+
+    def put_pssh(self):
+        try:
+            f = open(self.install_dir + '/' + self.filename, 'w+')
+            f.writelines(self.pssh)
+            f.close()
+        except IOError, e:
+            sys.exit(e)
+        return self
+
+
+def main():
+    Install().get_pssh().put_pssh()
+
+
+if __name__ == '__main__':
+    main()
