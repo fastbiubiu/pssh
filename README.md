@@ -1,5 +1,5 @@
 # pssh
 ## ssh manage
 
-config file:
+### config file:
 ~/.pssh.conf
