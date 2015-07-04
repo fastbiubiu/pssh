@@ -3,7 +3,7 @@
 
 __author__ = 'dunkebiao'
 
-"install pssh file"
+"install pssh file. this is file not doc and the late add"
 
 import os
 import sys
