@@ -3,35 +3,27 @@
 
 __author__ = 'dunkebiao'
 
-"install pssh file. this is file not doc and the late add"
+"install pssh file."
 
-import os
 import sys
 import getopt
 import urllib2
 
 
 class Install:
-    install_dir = '/usr/local/bin'
-    filename = 'pssh'
+    install_dir = ''
+    filename = ''
     pssh = ''
 
-    def __init__(self):
-        try:
-            options, args = getopt.getopt(sys.argv[1:], "f:d:", ["filename=", "install-dir="])
-        except getopt.GetoptError, e:
-            sys.exit(e.msg)
-
-        for name, value in options:
-            if name in ("-d", "--install_dir"):
-                self.install_dir = value.rsplit('/')
-            if name in ("-f", "--filename"):
-                self.filename = value
-
-        if not os.path.exists(self.install_dir):
-            sys.exit('[Error] Directory does not exist')
+    def __init__(self, install_dir, filename):
+        self.install_dir = install_dir
+        self.filename = filename
 
     def get_pssh(self):
+        """
+            get pssh file
+        :return:obj
+        """
         try:
             self.pssh = urllib2.urlopen('https://raw.githubusercontent.com/dunkebiao/python/master/ssh.py').read()
         except urllib2.HTTPError, e:
@@ -41,6 +33,10 @@ class Install:
         return self
 
     def put_pssh(self):
+        """
+            write pssh file
+        :return:obj
+        """
         try:
             f = open(self.install_dir + '/' + self.filename, 'w+')
             f.writelines(self.pssh)
@@ -51,7 +47,24 @@ class Install:
 
 
 def main():
-    Install().get_pssh().put_pssh()
+    """
+        this is mian
+    """
+    try:
+        options, args = getopt.getopt(sys.argv[1:], "f:d:", ["filename=", "install-dir="])
+    except getopt.GetoptError, e:
+        sys.exit(e.msg)
+
+    install_dir = '/usr/local/bin'
+    filename = 'pssh'
+
+    for name, value in options:
+        if name in ("-d", "--install_dir"):
+            install_dir = value.rsplit('/')
+        if name in ("-f", "--filename"):
+            filename = value
+
+    Install(install_dir, filename)
 
 
 if __name__ == '__main__':
