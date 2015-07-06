@@ -41,7 +41,7 @@ set host [lindex $argv 0]
 set port [lindex $argv 1]
 set user [lindex $argv 2]
 set passwd [lindex $argv 3]
-spawn scp -P %s $port $user@$host:%s
+spawn scp -P $port %s $user@$host:%s
 expect {
     "yes/no" {send "yes\r";exp_continue}
     "password:" {send "$passwd\r"}
@@ -56,6 +56,7 @@ Valid options:
     -c              : Load config file, please put in start
     -d [--id]       : By id lookup
     -s [--search]   : Through the keyword search
+    --list          : Show host list
     --pull          : Remote copy files to local
     --push          : Local copy files to remote
     --add           : Add host [ip] [prot] [user] [passwd]
@@ -108,7 +109,6 @@ Valid options:
         else:
             sys.exit('[Error] There is no host')
 
-    @property
     def list(self):
         """
             Display list and input id
@@ -116,7 +116,7 @@ Valid options:
         """
         self.show_list()
         try:
-            number = raw_input('please input (id):\r\n')
+            number = raw_input('please input (id):')
         except IOError, e:
             sys.exit(e)
         try:
@@ -130,7 +130,7 @@ Valid options:
         :return: list
         """
         for key, h in enumerate(self.h_list):
-            print str(key) + ') ' + h[1]
+            print str(key) + ') ' + h[0]
 
     def add_h(self, host):
         """
@@ -139,7 +139,7 @@ Valid options:
         """
         try:
             f = open(self.h_conf, 'a+')
-            f.write(''.join([str(x) for x in host]))
+            f.write('\t'.join([str(x) for x in host]) + '\n')
             f.close()
         except IOError, e:
             sys.exit(e)
@@ -155,8 +155,9 @@ Valid options:
         except IndexError, e:
             sys.exit(e)
         try:
-            f = open(self.h_conf, 'a+')
-            f.writelines(''.join([str(x) for x in self.h_list]))
+            f = open(self.h_conf, 'w')
+            for host in self.h_list:
+                f.write('\t'.join([str(x) for x in host]) + '\n')
             f.close()
         except IOError, e:
             sys.exit(e)
@@ -225,7 +226,7 @@ def main():
         options, args = getopt.getopt(
             sys.argv[1:],
             'hs:d:c:',
-            ['add', 'del', 'pull', 'push', 'id=', 'search=', 'help']
+            ['add', 'del', 'pull', 'push', 'list', 'id=', 'search=', 'help']
         )
     except getopt.GetoptError, e:
         sys.exit(e.msg)
@@ -242,6 +243,9 @@ def main():
             host = pssh.find(int(value))
         if name in ("-s", "--search"):
             host = pssh.search(str(value))
+        if name in ('--list'):
+            pssh.show_list()
+            exit(0)
         if name in ('--push'):
             pssh.cp_file = args
             operator = pssh.push
@@ -249,6 +253,7 @@ def main():
             pssh.cp_file = args
             operator = pssh.pull
         if name in ('--add'):
+            host = args
             operator = pssh.add_h
         if name in ('--del'):
             operator = pssh.del_h
