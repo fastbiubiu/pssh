@@ -26,7 +26,7 @@ class Install:
         :return:obj
         """
         try:
-            self.pssh = urllib2.urlopen('https://raw.githubusercontent.com/dunkebiao/python/master/ssh.py').read()
+            self.pssh = urllib2.urlopen('https://raw.githubusercontent.com/dunkebiao/pssh/master/ssh.py').read()
         except urllib2.HTTPError, e:
             sys.exit(e.code)
         except urllib2.URLError, e:
