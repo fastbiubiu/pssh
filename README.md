@@ -1,7 +1,9 @@
 # pssh
 ssh manage
+
 ### Install
     curl -sS https://raw.githubusercontent.com/dunkebiao/pssh/master/install | python --file_name=pssh --install_dir=/usr/local/bin
+
 ### Host config file. default ~/.pssh.conf
     pssh -c [~/.pssh.conf]
 
