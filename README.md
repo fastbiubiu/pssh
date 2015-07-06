@@ -1,30 +1,31 @@
 # pssh
 ssh manage
-
-### host config file. default ~/.pssh.conf
+### Install
+    curl -sS https://raw.githubusercontent.com/dunkebiao/pssh/master/install | python --file_name=pssh --install_dir=/usr/local/bin
+### Host config file. default ~/.pssh.conf
     pssh -c [~/.pssh.conf]
 
-### show host list
+### Show host list
     pssh --list
 
-### add host
+### Add host
     pssh --add [host] [port] [user] [passwd]
 
-### del host
+### Del host
     pssh --del -d [number]
     pssh --del -s [str]
 
-### pull
+### Pull
     pssh --pull [local] [remote]
     pssh --pull -d [number] [remote] [local]
     pssh --pull -s [str] [remote] [local]
     pssh --pull -c [~/.pssh.conf] -s [str] [remote] [local]
 
-### push
+### Push
     pssh --push [local] [remote]
 
-### search by id list
+### Search by id list
     pssh -d [number]
 
-### keyword search through the list
+### Keyword search through the list
     pssh -s [str]
