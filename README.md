@@ -1,8 +1,8 @@
 # pssh
 ssh manage
 
-### config file:
-    ~/.pssh.conf
+### host config file. default ~/.pssh.conf
+    pssh -c [~/.pssh.conf]
 
 ### show host list
     pssh --list
@@ -16,7 +16,6 @@ ssh manage
 
 ### scp
     pssh --scp -d [number] [source] [destination]
-
 
 ### search by id list
     pssh -d [number]
