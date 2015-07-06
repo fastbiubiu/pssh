@@ -5,6 +5,7 @@ __author__ = 'dunkebiao'
 
 "install pssh file."
 
+import os
 import sys
 import getopt
 import urllib2
@@ -43,6 +44,10 @@ class Install:
             f.close()
         except IOError, e:
             sys.exit(e)
+        try:
+            os.system('chmod +x '+self.install_dir + '/' + self.filename)
+        except:
+            sys.exit('[Error] install failure')
         return self
 
     def do(self):
@@ -63,7 +68,7 @@ def main():
     filename = 'pssh'
 
     for name, value in options:
-        if name in ("-d", "--install_dir"):
+        if name in ("-d", "--install-dir"):
             if value:
                 install_dir = value.rsplit('/')
         if name in ("-f", "--filename"):
