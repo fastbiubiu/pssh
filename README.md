@@ -4,7 +4,7 @@ ssh manage
 ### Install
     curl -sS https://raw.githubusercontent.com/dunkebiao/pssh/master/install | python - --filename=pssh —install-dir=/usr/local/bin
 
-### Host config file. default ~/.pssh.conf
+### Host config file, default ~/.pssh.conf, warning: please put in start
     pssh -c [~/.pssh.conf]
 
 ### Show host list
@@ -17,7 +17,7 @@ ssh manage
     pssh --del -d [number]
     pssh --del -s [str]
 
-### Pull
+### Pull, warning: remote  ~/ rewrite '~/'
     pssh --pull [local] [remote]
     pssh --pull -d [number] [remote] [local]
     pssh --pull -s [str] [remote] [local]
