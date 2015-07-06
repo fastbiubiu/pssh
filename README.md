@@ -14,8 +14,14 @@ ssh manage
     pssh --del -d [number]
     pssh --del -s [str]
 
-### scp
-    pssh --scp -d [number] [source] [destination]
+### pull
+    pssh --pull [local] [remote]
+    pssh --pull -d [number] [remote] [local]
+    pssh --pull -s [str] [remote] [local]
+    pssh --pull -c [~/.pssh.conf] -s [str] [remote] [local]
+
+### push
+    pssh --push [local] [remote]
 
 ### search by id list
     pssh -d [number]

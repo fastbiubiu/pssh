@@ -13,9 +13,9 @@ import hashlib
 
 class Pssh:
     login_cmd = '''#!/usr/bin/expect
-set user [lindex $argv 0]
-set host [lindex $argv 1]
-set port [lindex $argv 2]
+set host [lindex $argv 0]
+set port [lindex $argv 1]
+set user [lindex $argv 2]
 set passwd [lindex $argv 3]
 spawn ssh $host -p $port -l $user
 expect {
@@ -24,12 +24,24 @@ expect {
 }
 interact
 '''
-    scp_cmd = '''#!/usr/bin/expect
-set user [lindex $argv 0]
-set host [lindex $argv 1]
-set port [lindex $argv 2]
+    pull_cmd = '''#!/usr/bin/expect
+set host [lindex $argv 0]
+set port [lindex $argv 1]
+set user [lindex $argv 2]
 set passwd [lindex $argv 3]
-spawn ssh $host -p $port -l $user
+spawn scp -P $port $user@$host:%s %s
+expect {
+    "yes/no" {send "yes\r";exp_continue}
+    "password:" {send "$passwd\r"}
+}
+interact
+'''
+    push_cmd = '''#!/usr/bin/expect
+set host [lindex $argv 0]
+set port [lindex $argv 1]
+set user [lindex $argv 2]
+set passwd [lindex $argv 3]
+spawn scp -P %s $port $user@$host:%s
 expect {
     "yes/no" {send "yes\r";exp_continue}
     "password:" {send "$passwd\r"}
@@ -41,19 +53,26 @@ interact
     This is a line nonsense
 Valid options:
     -h [--help]     : Show help
+    -c              : Load config file, please put in start
     -d [--id]       : By id lookup
     -s [--search]   : Through the keyword search
-    --scp           : The remote copy files
+    --pull          : Remote copy files to local
+    --push          : Local copy files to remote
+    --add           : Add host [ip] [prot] [user] [passwd]
+    --del           : del host
 '''
     h_list = [
         # ['user','host','port','passwd']
     ]
-    options = ''
     h_conf = os.environ['HOME'] + '/.pssh.conf'
     f_exp = ''
+    cp_file = []
 
     def __init__(self):
+        self.conf()
 
+    def conf(self):
+        self.h_list = []
         if os.path.exists(self.h_conf):
             try:
                 f = open(self.h_conf, 'r')
@@ -62,9 +81,6 @@ Valid options:
                 f.close()
             except IOError, e:
                 sys.exit(e)
-
-        if len(self.h_list) == 0:
-            sys.exit('[Error] There is no host')
 
     def find(self, h_id):
         """
@@ -98,16 +114,25 @@ Valid options:
             Display list and input id
         :return: list
         """
-        for key, h in enumerate(self.h_list):
-            print str(key) + ') ' + h[1]
-
-        number = raw_input('please input (id):\r\n')
+        self.show_list()
+        try:
+            number = raw_input('please input (id):\r\n')
+        except IOError, e:
+            sys.exit(e)
         try:
             return self.h_list[int(number)]
         except IndexError:
             sys.exit('[Error] There is no host')
 
-    def add(self, host):
+    def show_list(self):
+        """
+            Display list
+        :return: list
+        """
+        for key, h in enumerate(self.h_list):
+            print str(key) + ') ' + h[1]
+
+    def add_h(self, host):
         """
             Add the host
         :param host:list
@@ -115,6 +140,23 @@ Valid options:
         try:
             f = open(self.h_conf, 'a+')
             f.write(''.join([str(x) for x in host]))
+            f.close()
+        except IOError, e:
+            sys.exit(e)
+        exit('ok\r\n')
+
+    def del_h(self, host):
+        """
+            Del the host
+        :param host:list
+        """
+        try:
+            del self.h_list[self.h_list.index(host)]
+        except IndexError, e:
+            sys.exit(e)
+        try:
+            f = open(self.h_conf, 'a+')
+            f.writelines(''.join([str(x) for x in self.h_list]))
             f.close()
         except IOError, e:
             sys.exit(e)
@@ -148,16 +190,27 @@ Valid options:
         except:
             sys.exit('[Error] Logon failure')
 
-    def scp(self, host):
+    def push(self, host):
         """
-            Perform scp
+            Perform push file
         :param host:
         """
-        self.expect(self.scp_cmd)
+        self.expect(self.push_cmd % tuple(self.cp_file))
         try:
             os.system(self.f_exp + ' %s %s %s %s' % tuple(host))
         except:
-            sys.exit('[Error] scp failure')
+            sys.exit('[Error] push failure')
+
+    def pull(self, host):
+        """
+            Perform pull file
+        :param host:
+        """
+        self.expect(self.pull_cmd % tuple(self.cp_file))
+        try:
+            os.system(self.f_exp + ' %s %s %s %s' % tuple(host))
+        except:
+            sys.exit('[Error] pull failure')
 
     def __del__(self):
         # os.remove(self.f_exp)
@@ -169,7 +222,11 @@ def main():
         This is main. you: nonsense.
     """
     try:
-        options, args = getopt.getopt(sys.argv[1:], 'hs:d:', ['scp', 'id=', 'search=', 'help'])
+        options, args = getopt.getopt(
+            sys.argv[1:],
+            'hs:d:c:',
+            ['add', 'del', 'pull', 'push', 'id=', 'search=', 'help']
+        )
     except getopt.GetoptError, e:
         sys.exit(e.msg)
 
@@ -178,17 +235,28 @@ def main():
     host = []
 
     for name, value in options:
+        if name in ('-c'):
+            pssh.h_conf = value
+            pssh.conf()
         if name in ('-d', 'id'):
             host = pssh.find(int(value))
         if name in ("-s", "--search"):
             host = pssh.search(str(value))
-        if name in ('--scp'):
-            operator = pssh.scp
+        if name in ('--push'):
+            pssh.cp_file = args
+            operator = pssh.push
+        if name in ('--pull'):
+            pssh.cp_file = args
+            operator = pssh.pull
+        if name in ('--add'):
+            operator = pssh.add_h
+        if name in ('--del'):
+            operator = pssh.del_h
         if name in ('-h', '--help'):
             exit(pssh.help_str)
 
     if not host:
-        host = pssh.list
+        host = pssh.list()
 
     operator(host)
 
