@@ -45,6 +45,10 @@ class Install:
             sys.exit(e)
         return self
 
+    def do(self):
+        self.get_pssh()
+        self.put_pssh()
+
 
 def main():
     """
@@ -60,11 +64,14 @@ def main():
 
     for name, value in options:
         if name in ("-d", "--install_dir"):
-            install_dir = value.rsplit('/')
+            if value:
+                install_dir = value.rsplit('/')
         if name in ("-f", "--filename"):
-            filename = value
+            if value:
+                filename = value
 
-    Install(install_dir, filename)
+    Install(install_dir, filename).do()
+    print('ok')
 
 
 if __name__ == '__main__':
