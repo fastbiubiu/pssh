@@ -2,25 +2,25 @@
 ssh manage
 
 ### config file:
-~/.pssh.conf
+    ~/.pssh.conf
 
 ### show host list
-pssh --list
+    pssh --list
 
 ### add host
-pssh --add [host] [port] [user] [passwd]
+    pssh --add [host] [port] [user] [passwd]
 
 ### del host
-pssh --del -d [number]
-pssh --del -s [str]
+    pssh --del -d [number]
+    pssh --del -s [str]
 
 ### scp
-pssh --scp -d [number] [source] [destination]
+    pssh --scp -d [number] [source] [destination]
 
 
 ### search by id list
-pssh -d [number]
+    pssh -d [number]
 
 ### keyword search through the list
-pssh -s [str]
+    pssh -s [str]
 
