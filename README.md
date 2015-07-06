@@ -23,4 +23,3 @@ ssh manage
 
 ### keyword search through the list
     pssh -s [str]
-
