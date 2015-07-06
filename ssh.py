@@ -107,15 +107,18 @@ Valid options:
         except IndexError:
             sys.exit('[Error] There is no host')
 
-    def add(self, host, user, passwd, port):
+    def add(self, host):
         """
             Add the host
-        :param host:
-        :param user:
-        :param passwd:
-        :param port:
+        :param host:list
         """
-        pass
+        try:
+            f = open(self.h_conf, 'a+')
+            f.write(''.join([str(x) for x in host]))
+            f.close()
+        except IOError, e:
+            sys.exit(e)
+        exit('ok\r\n')
 
     def expect(self, cmd):
         """
@@ -126,14 +129,13 @@ Valid options:
         m.update(cmd)
         self.f_exp = '/tmp/' + m.hexdigest()
 
-        if not os.path.exists(self.f_exp):
-            try:
-                f = open(self.f_exp, 'a+')
-                f.writelines(cmd)
-                f.close()
-            except IOError, e:
-                sys.exit(e)
-            os.system('chmod +x ' + self.f_exp)
+        try:
+            f = open(self.f_exp, 'a+')
+            f.writelines(cmd)
+            f.close()
+        except IOError, e:
+            sys.exit(e)
+        os.system('chmod +x ' + self.f_exp)
 
     def login(self, host):
         """
