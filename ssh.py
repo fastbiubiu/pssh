@@ -173,7 +173,7 @@ Valid options:
         self.f_exp = '/tmp/' + m.hexdigest()
 
         try:
-            f = open(self.f_exp, 'a+')
+            f = open(self.f_exp, 'a')
             f.writelines(cmd)
             f.close()
         except IOError, e:
