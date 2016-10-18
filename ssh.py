@@ -29,7 +29,7 @@ set host [lindex $argv 0]
 set port [lindex $argv 1]
 set user [lindex $argv 2]
 set passwd [lindex $argv 3]
-spawn scp -P $port $user@$host:%s %s
+spawn scp -r -P $port $user@$host:%s %s
 expect {
     "yes/no" {send "yes\r";exp_continue}
     "password:" {send "$passwd\r"}
