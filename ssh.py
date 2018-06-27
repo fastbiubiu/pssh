@@ -225,7 +225,7 @@ def main():
     try:
         options, args = getopt.getopt(
             sys.argv[1:],
-            'hs:d:c:',
+            'hs:i:c:',
             ['add', 'del', 'pull', 'push', 'list', 'id=', 'search=', 'help']
         )
     except getopt.GetoptError, e:
