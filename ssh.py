@@ -239,7 +239,7 @@ def main():
         if name in ('-c'):
             pssh.h_conf = value
             pssh.conf()
-        if name in ('-d', 'id'):
+        if name in ('-i', 'id'):
             host = pssh.find(int(value))
         if name in ("-s", "--search"):
             host = pssh.search(str(value))
