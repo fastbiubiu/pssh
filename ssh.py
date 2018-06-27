@@ -54,7 +54,7 @@ interact
 Valid options:
     -h [--help]     : Show help
     -c              : Load config file, please put in start
-    -d [--id]       : By id lookup
+    -i [--id]       : By id lookup
     -s [--search]   : Through the keyword search
     --list          : Show host list
     --pull          : Remote copy files to local
