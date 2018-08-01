@@ -117,10 +117,12 @@ Valid options:
         self.show_list()
         try:
             number = raw_input('please input (id):')
-        except IOError, e:
-            sys.exit(e)
+        except KeyboardInterrupt, e:
+            sys.exit()
         try:
             return self.h_list[int(number)]
+        except ValueError:
+            sys.exit()
         except IndexError:
             sys.exit('[Error] There is no host')
 
@@ -187,7 +189,7 @@ Valid options:
         """
         self.expect(self.login_cmd)
         try:
-            os.system(self.f_exp + ' %s %s %s %s' % tuple(host))
+            os.system(self.f_exp + ' %s %s %s \'%s\'' % tuple(host))
         except:
             sys.exit('[Error] Logon failure')
 
@@ -198,7 +200,7 @@ Valid options:
         """
         self.expect(self.push_cmd % tuple(self.cp_file))
         try:
-            os.system(self.f_exp + ' %s %s %s %s' % tuple(host))
+            os.system(self.f_exp + ' %s %s %s \'%s\'' % tuple(host))
         except:
             sys.exit('[Error] push failure')
 
@@ -209,7 +211,7 @@ Valid options:
         """
         self.expect(self.pull_cmd % tuple(self.cp_file))
         try:
-            os.system(self.f_exp + ' %s %s %s %s' % tuple(host))
+            os.system(self.f_exp + ' %s %s %s \'%s\'' % tuple(host))
         except:
             sys.exit('[Error] pull failure')
 
