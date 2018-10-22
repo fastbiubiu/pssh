@@ -78,7 +78,7 @@ Valid options:
             try:
                 f = open(self.h_conf, 'r')
                 for line in f:
-                    self.h_list.append(line.split())
+                    self.h_list.append(line.split(None,3))
                 f.close()
             except IOError, e:
                 sys.exit(e)
