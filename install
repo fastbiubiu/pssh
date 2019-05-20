@@ -30,7 +30,7 @@ class Install:
         :return:obj
         """
         try:
-            self.pssh = urllib2.urlopen('https://raw.githubusercontent.com/dunkebiao/pssh/master/ssh.py').read()
+            self.pssh = urllib2.urlopen('https://github.com/dunkebiao/pssh/releases/download/v2.0/Darwin-x86_64-pssh').read()
         except urllib2.HTTPError as e:
             sys.exit(e.code)
         except urllib2.URLError as e:

@@ -1,4 +1,3 @@
-
 __author__ = 'dunkebiao'
 
 "Auto ssh login # ssh.py [number] [find(str)]"
@@ -66,11 +65,12 @@ Valid options:
             Perform login
         :param host:
         """
+        terminal = os.get_terminal_size()
         client = paramiko.SSHClient()
         client.load_system_host_keys()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         client.connect(*host)
-        chan = client.invoke_shell()
+        chan = client.invoke_shell(term=os.environ.get('TERM'), width=terminal.columns, height=terminal.lines)
         interactive.interactive_shell(chan)
         chan.close()
         client.close()
@@ -105,4 +105,3 @@ def main():
         host = pssh.list()
 
     operator(host)
-
