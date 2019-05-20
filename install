@@ -8,7 +8,11 @@ __author__ = 'dunkebiao'
 import os
 import sys
 import getopt
-import urllib2
+
+try:
+    import urllib2
+except ImportError:
+    import urllib.request as urllib2
 
 
 class Install:
@@ -27,9 +31,9 @@ class Install:
         """
         try:
             self.pssh = urllib2.urlopen('https://raw.githubusercontent.com/dunkebiao/pssh/master/ssh.py').read()
-        except urllib2.HTTPError, e:
+        except urllib2.HTTPError as e:
             sys.exit(e.code)
-        except urllib2.URLError, e:
+        except urllib2.URLError as e:
             sys.exit(e.reason)
         return self
 
@@ -42,10 +46,10 @@ class Install:
             f = open(self.install_dir + '/' + self.filename, 'w+')
             f.writelines(self.pssh)
             f.close()
-        except IOError, e:
+        except IOError as e:
             sys.exit(e)
         try:
-            os.system('chmod +x '+self.install_dir + '/' + self.filename)
+            os.system('chmod +x ' + self.install_dir + '/' + self.filename)
         except:
             sys.exit('[Error] install failure')
         return self
@@ -61,7 +65,7 @@ def main():
     """
     try:
         options, args = getopt.getopt(sys.argv[1:], "f:d:", ["filename=", "install-dir="])
-    except getopt.GetoptError, e:
+    except getopt.GetoptError as e:
         sys.exit(e.msg)
 
     install_dir = '/usr/local/bin'

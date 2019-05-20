@@ -1,0 +1,2 @@
+paramiko==2.4.2
+PyInstaller==3.4
