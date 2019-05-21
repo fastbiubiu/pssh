@@ -1,2 +1,2 @@
-paramiko==2.4.2
+pexpect==4.7.0
 PyInstaller==3.4

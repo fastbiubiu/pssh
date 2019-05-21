@@ -1,3 +1,5 @@
+# !/usr/bin/env python
+
 __author__ = 'dunkebiao'
 
 "Auto ssh login # ssh.py [number] [find(str)]"
@@ -5,11 +7,8 @@ __author__ = 'dunkebiao'
 import os
 import sys
 import getopt
-import paramiko
-from pssh import interactive
-import warnings
-
-warnings.filterwarnings("ignore")
+import pexpect
+import signal
 
 
 class Pssh:
@@ -24,6 +23,7 @@ Valid options:
         # ['user','host','port','passwd']
     ]
     conf_file = os.environ['HOME'] + '/.pssh.conf'
+    process = None
 
     def __init__(self):
         if os.path.exists(self.conf_file):
@@ -60,20 +60,35 @@ Valid options:
         for key, h in enumerate(self.conf):
             print(str(key) + ') ' + h[0])
 
+    def set_win_size(self):
+        """
+         set windows size
+        :return:
+        """
+        terminal = os.get_terminal_size()
+        self.process.setwinsize(terminal.lines, terminal.columns)
+
     def login(self, host):
         """
             Perform login
         :param host:
         """
-        terminal = os.get_terminal_size()
-        client = paramiko.SSHClient()
-        client.load_system_host_keys()
-        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        client.connect(*host)
-        chan = client.invoke_shell(term=os.environ.get('TERM'), width=terminal.columns, height=terminal.lines)
-        interactive.interactive_shell(chan)
-        chan.close()
-        client.close()
+        self.process = process = pexpect.spawn('ssh %s -p %s -l %s ' % (host[0], host[1], host[2]))
+
+        while True:
+            index = process.expect(['continue', 'password:', pexpect.EOF, pexpect.TIMEOUT], timeout=10)
+            if index == 0:
+                process.sendline('yes')
+                continue
+            elif index == 1:
+                process.sendline(host[3])
+                break
+            else:
+                continue
+
+        signal.signal(signal.SIGWINCH, self.set_win_size)
+        self.set_win_size()
+        process.interact()
 
 
 def main():
