@@ -41,7 +41,7 @@ Valid options:
         self.show_list()
         try:
             number = input('please input (id):')
-        except KeyboardInterrupt as e:
+        except KeyboardInterrupt:
             sys.exit()
         try:
             return self.conf[int(number)]
