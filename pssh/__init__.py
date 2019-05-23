@@ -65,6 +65,8 @@ Valid options:
          set windows size
         :return:
         """
+        if not self.process:
+            return
         terminal = os.get_terminal_size()
         self.process.setwinsize(terminal.lines, terminal.columns)
 
@@ -85,8 +87,6 @@ Valid options:
                 break
             else:
                 continue
-
-        signal.signal(signal.SIGWINCH, self.set_win_size)
         self.set_win_size()
         process.interact()
 
@@ -105,6 +105,12 @@ def main():
         sys.exit(e.msg)
 
     pssh = Pssh()
+
+    def set_win_size(signum, frame):
+        pssh.set_win_size()
+
+    signal.signal(signal.SIGWINCH, set_win_size)
+
     operator = pssh.login
     host = []
 
