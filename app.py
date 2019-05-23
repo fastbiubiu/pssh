@@ -24,7 +24,12 @@ def set_win_size(signum, frame):
     pssh.set_win_size()
 
 
+def close(signum, frame):
+    pssh.process.close()
+
+
 signal.signal(signal.SIGWINCH, set_win_size)
+signal.signal(signal.SIGHUP, close)
 
 operator = pssh.login
 host = []

@@ -87,3 +87,4 @@ Valid options:
                 continue
         self.set_win_size()
         process.interact()
+        process.close()
