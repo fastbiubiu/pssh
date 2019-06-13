@@ -85,7 +85,7 @@ Valid options:
                 process.sendline('yes')
                 continue
             elif index == 1:
-                process.sendline(server[3])
+                process.sendline(server[3].strip())
                 break
             else:
                 continue
