@@ -28,7 +28,7 @@ Valid options:
             try:
                 f = open(self.conf_file, 'r')
                 for line in f:
-                    self.conf.append(line.split())
+                    self.conf.append(line.split(maxsplit=3))
                 f.close()
             except IOError as e:
                 sys.exit(e)
@@ -68,12 +68,13 @@ Valid options:
         terminal = os.get_terminal_size()
         self.process.setwinsize(terminal.lines, terminal.columns)
 
-    def login(self, host):
+    def login(self, server):
         """
             Perform login
         :param host:
         """
-        self.process = process = pexpect.spawn('ssh %s -p %s -l %s ' % (host[0], host[1], host[2]))
+        self.process = process = pexpect.spawn(
+            'ssh %s -p %s -l %s ' % (server[0].split(':').pop(), server[1], server[2]))
 
         while True:
             index = process.expect(['continue', 'password:', pexpect.EOF, pexpect.TIMEOUT], timeout=10)
@@ -81,7 +82,7 @@ Valid options:
                 process.sendline('yes')
                 continue
             elif index == 1:
-                process.sendline(host[3])
+                process.sendline(server[3])
                 break
             else:
                 continue
