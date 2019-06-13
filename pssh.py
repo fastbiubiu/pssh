@@ -74,7 +74,7 @@ Valid options:
     def login(self, server):
         """
             Perform login
-        :param host:
+        :param server:
         """
         self.process = process = pexpect.spawn(
             'ssh %s -p %s -l %s ' % (server[0].split(':').pop(), server[1], server[2]))
