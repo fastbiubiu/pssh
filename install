@@ -14,7 +14,7 @@ import platform
 def download(install_dir, filename, version):
     sysname = "-".join([platform.uname()[0], platform.uname()[4]])
     url = 'https://github.com/dunkebiao/pssh/releases/download/' + version + '/' + sysname + '-pssh'
-    file_path = install_dir + '/' + filename
+    file_path = str(install_dir) + '/' + str(filename)
     try:
         os.system('curl -L -o %s %s' % (file_path, url))
         os.system('chmod +x ' + file_path)
