@@ -31,7 +31,7 @@ Valid options:
             try:
                 f = open(self.conf_file, 'r')
                 for line in f:
-                    self.conf.append(line.split(maxsplit=3))
+                    self.conf.append(line.split(None, 3))
                 f.close()
             except IOError as e:
                 sys.exit(e)
