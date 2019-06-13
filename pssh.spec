@@ -2,7 +2,7 @@
 
 block_cipher = None
 
-a = Analysis(['app.py'],
+a = Analysis(['pssh.py'],
              pathex=['.'],
              binaries=[],
              datas=[],
