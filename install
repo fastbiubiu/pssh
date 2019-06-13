@@ -8,6 +8,7 @@ __author__ = 'dunkebiao'
 import os
 import sys
 import getopt
+import platform
 
 try:
     import urllib2
@@ -20,17 +21,20 @@ class Install:
     filename = ''
     pssh = ''
 
-    def __init__(self, install_dir, filename):
+    def __init__(self, install_dir, filename, version):
         self.install_dir = install_dir
         self.filename = filename
+        self.version = version
 
     def get_pssh(self):
         """
             get pssh file
         :return:obj
         """
+        sysname = "-".join([platform.uname().system, platform.uname().machine])
         try:
-            self.pssh = urllib2.urlopen('https://github.com/dunkebiao/pssh/releases/download/v2.0/Darwin-x86_64-pssh').read()
+            self.pssh = urllib2.urlopen(
+                'https://github.com/dunkebiao/pssh/releases/download/' + self.version + '/' + sysname + '-pssh').read()
         except urllib2.HTTPError as e:
             sys.exit(e.code)
         except urllib2.URLError as e:
@@ -43,8 +47,8 @@ class Install:
         :return:obj
         """
         try:
-            f = open(self.install_dir + '/' + self.filename, 'w+')
-            f.writelines(self.pssh)
+            f = open(self.install_dir + '/' + self.filename, 'wb')
+            f.write(self.pssh)
             f.close()
         except IOError as e:
             sys.exit(e)
@@ -70,6 +74,7 @@ def main():
 
     install_dir = '/usr/local/bin'
     filename = 'pssh'
+    version = 'v3.0'
 
     for name, value in options:
         if name in ("-d", "--install-dir"):
@@ -79,7 +84,7 @@ def main():
             if value:
                 filename = value
 
-    Install(install_dir, filename).do()
+    Install(install_dir, filename, version).do()
     print('ok')
 
 
