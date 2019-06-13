@@ -10,57 +10,16 @@ import sys
 import getopt
 import platform
 
-try:
-    import urllib2
-except ImportError:
-    import urllib.request as urllib2
 
-
-class Install:
-    install_dir = ''
-    filename = ''
-    pssh = ''
-
-    def __init__(self, install_dir, filename, version):
-        self.install_dir = install_dir
-        self.filename = filename
-        self.version = version
-
-    def get_pssh(self):
-        """
-            get pssh file
-        :return:obj
-        """
-        sysname = "-".join([platform.uname()[0], platform.uname()[4]])
-        try:
-            self.pssh = urllib2.urlopen(
-                'https://github.com/dunkebiao/pssh/releases/download/' + self.version + '/' + sysname + '-pssh').read()
-        except urllib2.HTTPError as e:
-            sys.exit(e.code)
-        except urllib2.URLError as e:
-            sys.exit(e.reason)
-        return self
-
-    def put_pssh(self):
-        """
-            write pssh file
-        :return:obj
-        """
-        try:
-            f = open(self.install_dir + '/' + self.filename, 'wb')
-            f.write(self.pssh)
-            f.close()
-        except IOError as e:
-            sys.exit(e)
-        try:
-            os.system('chmod +x ' + self.install_dir + '/' + self.filename)
-        except:
-            sys.exit('[Error] install failure')
-        return self
-
-    def do(self):
-        self.get_pssh()
-        self.put_pssh()
+def download(install_dir, filename, version):
+    sysname = "-".join([platform.uname()[0], platform.uname()[4]])
+    url = 'https://github.com/dunkebiao/pssh/releases/download/' + version + '/' + sysname + '-pssh'
+    file_path = install_dir + '/' + filename
+    try:
+        os.system('curl -CL -o %s %s' % (file_path, url))
+        os.system('chmod +x ' + file_path)
+    except:
+        sys.exit('[Error] install failure')
 
 
 def main():
@@ -84,7 +43,7 @@ def main():
             if value:
                 filename = value
 
-    Install(install_dir, filename, version).do()
+    download(install_dir, filename, version)
     print('ok')
 
 
