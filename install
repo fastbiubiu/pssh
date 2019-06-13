@@ -16,7 +16,7 @@ def download(install_dir, filename, version):
     url = 'https://github.com/dunkebiao/pssh/releases/download/' + version + '/' + sysname + '-pssh'
     file_path = install_dir + '/' + filename
     try:
-        os.system('curl -CL -o %s %s' % (file_path, url))
+        os.system('curl -L -o %s %s' % (file_path, url))
         os.system('chmod +x ' + file_path)
     except:
         sys.exit('[Error] install failure')
