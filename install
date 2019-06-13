@@ -18,7 +18,7 @@ def download(install_dir, filename, version):
     try:
         os.system('curl -L -o %s %s' % (file_path, url))
         os.system('chmod +x ' + file_path)
-    except:
+    except Exception as e:
         sys.exit('[Error] install failure')
 
 
