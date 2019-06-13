@@ -31,7 +31,7 @@ class Install:
             get pssh file
         :return:obj
         """
-        sysname = "-".join([platform.uname().system, platform.uname().machine])
+        sysname = "-".join([platform.uname()[0], platform.uname()[4]])
         try:
             self.pssh = urllib2.urlopen(
                 'https://github.com/dunkebiao/pssh/releases/download/' + self.version + '/' + sysname + '-pssh').read()
