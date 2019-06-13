@@ -8,4 +8,6 @@ ssh manages
     pssh --list
     
 ### alias:IP Config to .pssh
-   test:127.0.0.1   22  root    123456
+    ```
+    test:127.0.0.1   22  root    123456
+    ```
