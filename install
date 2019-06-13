@@ -38,7 +38,7 @@ def main():
     for name, value in options:
         if name in ("-d", "--install-dir"):
             if value:
-                install_dir = value.rsplit('/')
+                install_dir = value.rstrip('/')
         if name in ("-f", "--filename"):
             if value:
                 filename = value
